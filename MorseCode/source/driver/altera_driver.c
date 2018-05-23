@@ -11,10 +11,12 @@ MODULE_AUTHOR("Patrick Schaumont");
 
 //-- Hardware Handles
 
-static void *hexport;  // handle to 32-bit output PIO
-static void *hex_display;
-static void *inport;   // handle to 16-bit input PIO
-static void *pushbutton;
+static void *hexport;     // handle to 32-bit output PIO 7-seg display (4 on the right)
+static void *hex_display; // handle to 32-bit output PIO 7-seg display (4 on the left)
+static void *red_leds;    // handle to 16-bit output PIO (Red Leds)
+static void *green_leds;  // handle to 16-bit output PIO (Green Leds)
+static void *inport;      // handle to 16-bit input PIO  (18 Switches)
+static void *pushbutton;  // handle to 16-bit input PIO  (4 PushButtons)
 
 //-- Char Driver Interface
 static int   access_count =  0;
@@ -184,6 +186,8 @@ static int pci_probe(struct pci_dev *dev, const struct pci_device_id *id) {
 
   hexport = ioremap_nocache(resource + 0XC000, 0x20);
   hex_display = ioremap_nocache(resource + 0XC040, 0x20);
+  red_leds = ioremap_nocache(resource + TODOADDR, 0x20);
+  green_leds = ioremap_nocache(resource + TODOADDR, 0x20);
   inport  = ioremap_nocache(resource + 0XC020, 0x20);
   pushbutton = ioremap_nocache(resource + 0XC060, 0x20);
 
@@ -193,6 +197,8 @@ static int pci_probe(struct pci_dev *dev, const struct pci_device_id *id) {
 static void pci_remove(struct pci_dev *dev) {
   iounmap(hexport);
   iounmap(hex_display);
+  iounmap(red_leds);
+  iounmap(green_leds);
   iounmap(inport);
   iounmap(pushbutton);
 }
