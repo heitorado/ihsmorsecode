@@ -1,7 +1,7 @@
 # ihsmorsecode
 Project at CIn-UFPE for "Hardware-Software Interface". 
 
-###Features:
+### Features:
 
 - Small module driver for reading PIOs from the Altera FPGA
 - Arduino uno as a Telegraph Machine
