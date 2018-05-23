@@ -1,5 +1,6 @@
 # ihsmorsecode
-Project at CIn-UFPE for "Hardware-Software Interface". 
+Project at CIn-UFPE for ["Hardware-Software Interface"](https://sites.google.com/a/cin.ufpe.br/if817/home).
+Computer Engineering 2018.1
 
 ### Features:
 
