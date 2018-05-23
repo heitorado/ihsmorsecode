@@ -77,13 +77,13 @@ static ssize_t char_device_read(struct file *filep, char *buf, size_t type, loff
 
     if(type == 0)
     {
-      switches = ioread16(inport);
+      switches = ioread32(inport);
       put_user(switches & 0xFF, buf++);
       put_user((switches >> 8) & 0xFF, buf++);
     }
     else if(type == 1)
     {
-      buttons = ioread16(pushbutton);
+      buttons = ioread32(pushbutton);
       put_user(buttons & 0xFF, buf++);
       put_user((buttons >> 8) & 0xFF, buf++);
     }
