@@ -13,8 +13,8 @@ MODULE_AUTHOR("Patrick Schaumont");
 
 static void *hexport;     // handle to 32-bit output PIO 7-seg display (4 on the right)
 static void *hex_display; // handle to 32-bit output PIO 7-seg display (4 on the left)
-static void *red_leds;    // handle to 16-bit output PIO (Red Leds)
-static void *green_leds;  // handle to 16-bit output PIO (Green Leds)
+static void *redlight;    // handle to 16-bit output PIO (Red Leds)
+static void *greenlight;  // handle to 16-bit output PIO (Green Leds)
 static void *inport;      // handle to 16-bit input PIO  (18 Switches)
 static void *pushbutton;  // handle to 16-bit input PIO  (4 PushButtons)
 
@@ -140,9 +140,9 @@ static ssize_t char_device_write(struct file *filep, const char *buf, size_t typ
     else if(type == 1)
       iowrite32(k, hex_display);
     else if (type == 2)
-      iowrite32(k, red_leds);
+      iowrite32(k, redlight);
     else if (type == 3)
-      iowrite32(k, green_leds);
+      iowrite32(k, greenlight);
   }
 
   return count;
@@ -193,8 +193,8 @@ static int pci_probe(struct pci_dev *dev, const struct pci_device_id *id) {
 
   hexport = ioremap_nocache(resource + 0XC000, 0x20);
   hex_display = ioremap_nocache(resource + 0XC040, 0x20);
-  red_leds = ioremap_nocache(resource + TODOADDR, 0x20);
-  green_leds = ioremap_nocache(resource + TODOADDR, 0x20);
+  redlight = ioremap_nocache(resource + 0X0CA0, 0x20);
+  greenlight = ioremap_nocache(resource + 0XC080, 0x20);
   inport  = ioremap_nocache(resource + 0XC020, 0x20);
   pushbutton = ioremap_nocache(resource + 0XC060, 0x20);
 
@@ -204,8 +204,8 @@ static int pci_probe(struct pci_dev *dev, const struct pci_device_id *id) {
 static void pci_remove(struct pci_dev *dev) {
   iounmap(hexport);
   iounmap(hex_display);
-  iounmap(red_leds);
-  iounmap(green_leds);
+  iounmap(redlight);
+  iounmap(greenlight);
   iounmap(inport);
   iounmap(pushbutton);
 }
