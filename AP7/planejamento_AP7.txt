@@ -1,0 +1,27 @@
+AP7 IHS - Planejamento
+
+-- Binary Casino --
+
+4 primeiras switches da esquerda para direita - aposta (max 15 fichas - 1111)
+
+4 ultimos switches da esquerda para direita - controla o jackpot
+	4 switches para cima - ativa roleta
+	ao abaixar cada switch, o valor correspondente do display acima ira parar
+
+
+
+REGRAS-
+	dois numeros iguais -> ganha quantia apostada
+	tres numeros iguais -> ganha quantia << 1
+	quatro numeros iguais -> ganha quantia << 2
+
+	*iguais AO LADO UM DO OUTRO*
+
+	se nenhuma das condicoes for atendida, ele perde a aposta
+
+================================================================================
+
+-> piscar luzinhas no jackpot e fazer barulho
+
+
+
