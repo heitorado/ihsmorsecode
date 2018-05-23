@@ -121,6 +121,9 @@ static ssize_t char_device_write(struct file *filep, const char *buf, size_t typ
     case 2:
       len = 4;
       count = len;
+    case 3:
+      len = 4;
+      count = len;
 
     default:
       len = 4;
@@ -136,6 +139,10 @@ static ssize_t char_device_write(struct file *filep, const char *buf, size_t typ
       iowrite32(k, hexport);
     else if(type == 1)
       iowrite32(k, hex_display);
+    else if (type == 2)
+      iowrite32(k, red_leds);
+    else if (type == 3)
+      iowrite32(k, green_leds);
   }
 
   return count;
