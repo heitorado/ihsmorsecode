@@ -22,10 +22,18 @@ modules:
 modules_install:
 	$(MAKE) -C $(KERNELDIR) M=$(PWD) modules_install
 
+module_insert:
+	sudo rmmod altera_driver
+	sudo insmod altera_driver.ko
+	sudo rm /dev/de2i150_altera
+	sudo mknod /dev/de2i150_altera c 91 1
+
 clean:
 	rm -rf *.o *~ core .depend .*.cmd *.ko *.mod.c .tmp_versions modules.order Module.symvers
 
-.PHONY: modules modules_install clean
+
+
+.PHONY: modules modules_install module_insert clean 
 
 else
 # called from kernel build system: just declare what our modules are
