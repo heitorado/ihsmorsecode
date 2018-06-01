@@ -1,0 +1,48 @@
+Project Specs
+
+[Periféricos da Placa]
+
+Display LCD de 4 digitos:
+	- Mostra o codigo morse atual sendo fornecido pelo usuário
+
+Display LCD de 2 dígitos (direita)
+	- Mostra contagem de letras digitas na mensagem atual
+
+Display LCD de 2 dígitos (esquerda)
+	- Mostra contagem de palavras na mensagem atual
+
+Botões (da esquerda para direita)
+	- BT1: Usado para usuário digitar código morse
+	- BT2: Usado para inserir um espaço ao fim da palavra
+	- BT3: Usado para apagar o último caractere digitado
+	- BT4: Usado para iniciar o processo de criptografia e salvar o arquivo com a mensagem.
+
+Switches
+	- Serão usadas para compor a chave criptográfica da mensagem. A mensagem só poderá ser lida novamente com as switches na mesma posição.
+
+Buzzer
+	- Utilizado para o sinal sonoro do código morse
+
+Leds Vermelhos
+	- ???
+
+Leds Verdes
+	- ???
+
+[Outros]
+	- Um arduino também será utilizado como alternativa para enviar o código morse para a placa
+	- Será utilizado OpenMP para fazer a leitura dinâmica do código morse digitado, com base em intervalos de tempo regulares para ler cada letra.
+
+[Software]
+
+Menu: Escolher entre:
+	[1] Decodificar mensagem existente
+	[2] Nova mensagem
+
+	Se [1]:
+		Digitar o nome do arquivo desejado, certificar que os switches estão na posição certa e apertar enter. O output será mostrado na tela.
+
+	Se [2]:
+		Uma thread lerá a cada x segundo o valor contido em um buffer, que receberá o valor da placa/arduino em pontos e traços. Essa thread irá mandar, letra por letra, o codigo morse para conversão, e salvar num vetor temporário a mensagem sendo digitada. Quando o usuário apertar na placa o botão de iniciar criptografia, o estado atual das switches será lido e o arquivo será criptografado e salvo. O programa então retorna ao menu inicial.
+
+

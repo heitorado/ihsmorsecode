@@ -45,8 +45,9 @@ int main() {
   int disp1, disp2;       // for writing on 7 seg displays
   int rLeds, gLeds;       // for writing on red and green leds
   int sw, bt;             // for reading switches and buttons
+  unsigned long int test;
   int i=0, j=0, k=0, l=0; // aux
-
+  char aux;
   char morseCode[5];      // for storing dots and slashes
   char text[100000];      // for storing the message.
 
@@ -56,7 +57,7 @@ int main() {
   //TODO - Create thread for decoding morse
 
   // Main program
-  while(1)
+  while( 1 )
   {
     // Reads serial input from arduino
 
@@ -67,8 +68,28 @@ int main() {
     // Every 1.5 seconds, the conversion thread made in OPENMP will empty the dot-slash vector and convert to a character.
 
     // If the 'finish' button/switch is active, read the current switch state and apply the corresponding criptography on text vector, saving it to a file afterwards.
+    
+    read(dev, &test, 0);
+    test = test & 0xFF;
+    printf("SW: %ld\n", test);
 
 
+
+    sleep(1);
+
+      i = 10;
+
+      k = hexdigit[rand()%10];
+      k = k | hexdigit[rand()%10] << 8;
+      k = k | hexdigit[rand()%10] << 16;
+      k = k | hexdigit[rand()%10] << 24;
+      k = ~k;
+
+      while(i>0){
+        write(dev, &k, 0);
+        write(dev, &k, 1);
+        --i;
+      }
 
     // Besides all that, the application should respond the pushbutton command to erase a character from text vector.
   }
@@ -103,7 +124,8 @@ WRITING ON 7-SEG DISPLAY
   (USUALLY IS BETTER WRITING SEVERAL TIMES (JUST TO BE SURE))
 
 WRITING ON LEDS
-  ?????????????????????
+  write(dev, &rLeds, 2)
+  write(dev, &gLeds, 3)
   
-/*
+*/
 

@@ -48,38 +48,19 @@ static int char_device_release(struct inode *inodep, struct file *filep) {
 static ssize_t char_device_read(struct file *filep, char *buf, size_t type, loff_t *off) {
   short switches;
   short buttons;
-  size_t count = 0;
-  size_t len = 0;
+
   //  printk(KERN_ALERT "altera_driver: read %d bytes\n", len);
 
   // Mudança de variavel len para type para escolhermos onde a entrada sera lida
   // type = 0 -> switches
   // type = 1 -> botoes
 
-  switch(type)
-  {
-    case 0:
-      len = 4;
-      count = len;
-      break;
-
-    case 1:
-      len = 4;
-      count = len;
-      break;
-
-    default:
-      len = 4;
-      count = len;
-  }
-
-  while (len > 0) {
 
     if(type == 0)
     {
       switches = ioread32(inport);
-      put_user(switches & 0xFF, buf++);
-      put_user((switches >> 8) & 0xFF, buf++);
+      put_user(switches, buf++);
+      //put_user((switches >> 24) & 0xFF, buf++);
     }
     else if(type == 1)
     {
@@ -87,19 +68,12 @@ static ssize_t char_device_read(struct file *filep, char *buf, size_t type, loff
       put_user(buttons & 0xFF, buf++);
       put_user((buttons >> 8) & 0xFF, buf++);
     }
-    
 
-
-    len -= 2;
-  }
-  return count;
+  return 4;
 }
 
 static ssize_t char_device_write(struct file *filep, const char *buf, size_t type, loff_t *off) {
   char *ptr = (char *) buf;
-  size_t count = 0;
-  size_t len = 0;
-  short b = 0;
   //  printk(KERN_ALERT "altera_driver: write %d bytes\n", len);
 
   // Mudança de variavel len para type para escolhermos onde a saida sera exibida
@@ -108,44 +82,18 @@ static ssize_t char_device_write(struct file *filep, const char *buf, size_t typ
   // type = 2 -> leds vermelhos
   // type = 3 -> leds verdes
 
-  switch(type)
-  {
-    case 0:
-      len = 4;
-      count = len;
-      break;
-    case 1:
-      len = 4;
-      count = len;
-      break;
-    case 2:
-      len = 4;
-      count = len;
-    case 3:
-      len = 4;
-      count = len;
+  unsigned k = *((int *) ptr);
 
-    default:
-      len = 4;
-      count = len;
-  }
-
-  while (b <  len) {
-    unsigned k = *((int *) ptr);
-    ptr += 4;
-    b   += 4;
-
-    if(type == 0)
-      iowrite32(k, hexport);
-    else if(type == 1)
-      iowrite32(k, hex_display);
-    else if (type == 2)
-      iowrite32(k, redlight);
-    else if (type == 3)
-      iowrite32(k, greenlight);
-  }
-
-  return count;
+  if(type == 0)
+    iowrite32(k, hexport);
+  else if(type == 1)
+    iowrite32(k, hex_display);
+  else if (type == 2)
+    iowrite32(k, redlight);
+  else if (type == 3)
+    iowrite32(k, greenlight);
+  
+  return 4;
 }
 
 //-- PCI Device Interface
