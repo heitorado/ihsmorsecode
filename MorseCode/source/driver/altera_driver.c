@@ -140,11 +140,11 @@ static int pci_probe(struct pci_dev *dev, const struct pci_device_id *id) {
   printk(KERN_ALERT "altera_driver: Resource start at bar 0: %lx\n", resource);
 
   hexport = ioremap_nocache(resource + 0XC000, 0x20);
-  hex_display = ioremap_nocache(resource + 0XC040, 0x20);
-  redlight = ioremap_nocache(resource + 0X0CA0, 0x20);
-  greenlight = ioremap_nocache(resource + 0XC080, 0x20);
-  inport  = ioremap_nocache(resource + 0XC020, 0x20);
-  pushbutton = ioremap_nocache(resource + 0XC060, 0x20);
+  hex_display = ioremap_nocache(resource + 0XC020, 0x20);
+  redlight = ioremap_nocache(resource + 0XC0A0, 0x20);
+  greenlight = ioremap_nocache(resource + 0XC0C0, 0x20);
+  inport  = ioremap_nocache(resource + 0XC060, 0x20);
+  pushbutton = ioremap_nocache(resource + 0XC080, 0x20);
 
   return 0;
 }

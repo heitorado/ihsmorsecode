@@ -57,6 +57,7 @@ int main() {
   //TODO - Create thread for decoding morse
 
   // Main program
+  gLeds = 0x1;
   while( 1 )
   {
     // Reads serial input from arduino
@@ -69,11 +70,17 @@ int main() {
 
     // If the 'finish' button/switch is active, read the current switch state and apply the corresponding criptography on text vector, saving it to a file afterwards.
     
-    read(dev, &test, 0);
-    test = test & 0xFF;
-    printf("SW: %ld\n", test);
+    read(dev, &k, 0);
+    sw = k & 0xFF;
+    printf("SW: %d\n", sw);
+
+    read(dev, &k, 1);
+    bt = k & 0xFF;
+    bt = abs(bt-15);
+    printf("BT: %d\n", bt);
 
 
+    
 
     sleep(1);
 
@@ -89,6 +96,16 @@ int main() {
         write(dev, &k, 0);
         write(dev, &k, 1);
         --i;
+      }
+
+      if(sw == 128)
+      {
+        
+        write(dev, &gLeds, 2);
+        write(dev, &gLeds, 3);
+
+        printf("Valor nos leds: %d\n", gLeds);
+        gLeds++;
       }
 
     // Besides all that, the application should respond the pushbutton command to erase a character from text vector.
@@ -124,8 +141,8 @@ WRITING ON 7-SEG DISPLAY
   (USUALLY IS BETTER WRITING SEVERAL TIMES (JUST TO BE SURE))
 
 WRITING ON LEDS
-  write(dev, &rLeds, 2)
-  write(dev, &gLeds, 3)
+  write(dev, &rLeds, 3)
+  write(dev, &gLeds, 2)
   
 */
 
