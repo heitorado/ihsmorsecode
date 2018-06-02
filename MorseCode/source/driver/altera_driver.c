@@ -46,8 +46,8 @@ static int char_device_release(struct inode *inodep, struct file *filep) {
 }
 
 static ssize_t char_device_read(struct file *filep, char *buf, size_t type, loff_t *off) {
-  short switches;
-  short buttons;
+  long switches;
+  long buttons;
 
   //  printk(KERN_ALERT "altera_driver: read %d bytes\n", len);
 
