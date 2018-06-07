@@ -58,7 +58,7 @@ static ssize_t char_device_read(struct file *filep, char *buf, size_t type, loff
     if(type == 0)
     {
       switches = ioread32(inport);
-      printk(KERN_ALERT "altera_driver: read %d bytes\n", switches);
+      printk(KERN_ALERT "altera_driver: read %ld bytes\n", switches);
 
       put_user((switches) & 0xFF, buf++);
       put_user((switches >> 8) & 0xFF, buf++);

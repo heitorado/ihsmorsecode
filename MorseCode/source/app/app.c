@@ -2,6 +2,7 @@
 #include <fcntl.h>
 #include <stdio.h>
 #include <time.h>
+#include <omp.h>
 
 // Referecing the 4 pushbuttons from the FPGA, from left to right.
 #define BT1 8
@@ -11,24 +12,27 @@
 
 // Referencing the 18 switches from the FPGA, from left to right.
 
-#define SW18 0
-#define SW17 0
-#define SW16 0
-#define SW15 0
-#define SW14 0
-#define SW13 0
-#define SW12 0
-#define SW11 0
-#define SW10 0
-#define SW09 0
-#define SW08 0
-#define SW07 0
-#define SW06 0
-#define SW05 0
-#define SW04 0
-#define SW03 0
-#define SW02 0
-#define SW01 0
+#define SW18 131072
+#define SW17 65536
+#define SW16 32768
+#define SW15 16384
+#define SW14 8192
+#define SW13 4096
+#define SW12 2048
+#define SW11 1024
+#define SW10 512
+#define SW09 256
+#define SW08 128
+#define SW07 64
+#define SW06 32
+#define SW05 16
+#define SW04 8
+#define SW03 4
+#define SW02 2
+#define SW01 1
+
+// Constraints for morse code
+#define MAX_DOT_TIME 50000
 
 // Conversion array for 7 Segment display.
 unsigned char hexdigit[] = {0x3F, 0x06, 0x5B, 0x4F,
@@ -37,30 +41,167 @@ unsigned char hexdigit[] = {0x3F, 0x06, 0x5B, 0x4F,
                             0x39, 0x5E, 0x79, 0x71};
 
 
+unsigned long int readSwitch(int dev, long int *k)
+{
+    unsigned long int sw;
+    read(dev, k, 0);
+    *k &= 0x3FFFF;
+    sw = *k;
+
+    return sw;
+}
+
+unsigned long int readButton(int dev, long int *k)
+{
+    unsigned long int bt;
+    read(dev, k, 1);
+    *k &= 0xF;
+    bt = *k;
+    bt = abs(bt-15);
+
+    return bt;
+}
+
+void writeDisplayRight(int num1, int num2, int num3, int num4, int dev)
+{
+  long int i = 10;
+  long int k = 0;
+
+  k = hexdigit[num4];
+  k = k | hexdigit[num3] << 8;
+  k = k | hexdigit[num2] << 16;
+  k = k | hexdigit[num1] << 24;
+  k = ~k;
+
+  while(i>0){
+    write(dev, &k, 0);
+    //write(dev, &k, 1);
+    --i;
+  }
+  return;
+}
+
+void writeDisplayLeft(int num1, int num2, int num3, int num4, int dev)
+{
+  long int i = 10;
+  long int k = 0;
+
+  k = hexdigit[num4];
+  k = k | hexdigit[num3] << 8;
+  k = k | hexdigit[num2] << 16;
+  k = k | hexdigit[num1] << 24;
+  k = ~k;
+
+  while(i>0){
+    //write(dev, &k, 0);
+    write(dev, &k, 1);
+    --i;
+  }
+  return;
+}
+
+void writeRedLeds(int val, int dev)
+{
+  int leds = val;
+  write(dev, &leds, 2);
+
+  return;
+}
+
+void writeGreenLeds(int val, int dev)
+{
+  int leds = val;
+  write(dev, &leds, 3);
+
+  return;
+}
+
+
 int main() {
 
   // Initial Setup
   srand(time(NULL));
 
-  int disp1, disp2;       // for writing on 7 seg displays
-  int rLeds, gLeds;       // for writing on red and green leds
-  unsigned long int sw, bt;             // for reading switches and buttons
+  unsigned long int sw=0, bt=0;             // for reading switches and buttons
   unsigned long int test;
   long int i=0, j=0, k=0, l=0; // aux
-  char aux;
+  
+
+  //threads
+  int tid;
+
+  //app specific
   char morseCode[5];      // for storing dots and slashes
   char text[100000];      // for storing the message.
+  int tempo = 0;
+  int pontos = 0, tracos = 0;
 
 
   int dev = open("/dev/de2i150_altera", O_RDWR);
-  printf("dev ID: %d\n", dev);
-  puts("aa");
-
+  //printf("dev ID: %d\n", dev);
   //TODO - Create thread for decoding morse
+  int maxt=0;
 
+  /*#pragma omp parallel num_threads(2) private(tid)
+  {
+    tid = omp_get_thread_num();
+
+    if(tid != 0) //thread responsavel por ler o caractere morse
+    {
+      //while(1){}
+      printf("sou a thread %d\n", tid);
+    }
+
+    #pragma omp master
+    {*/
+
+    int prog = 1;
+      while(prog)
+      {
+        bt = readButton(dev, &k);
+        //printf("bt: %d\n", bt);
+        while(bt == BT1){
+          bt = readButton(dev, &k);
+          tempo++;
+          //printf("tempo dentro do while: %d\n", tempo);
+        }
+
+        if(bt == 0)
+        {
+          //printf("tempo: %d\n", tempo);
+          if(tempo > MAX_DOT_TIME) //traco
+          {
+            writeDisplayRight(1, 1, 1, 1, dev);
+            tracos++;
+            tempo = 0;
+          }
+          else if(tempo > 0 && tempo <= MAX_DOT_TIME)
+          {
+            writeDisplayRight(0, 0, 0, 0, dev);
+            pontos++;
+            tempo = 0;
+
+          }
+
+        }
+    /*  }
+    }*/
+        sw = readSwitch(dev, &k);
+        //printf("asgasg%lu\n", sw);
+        if(sw == SW07)
+          prog = 0;
+
+  }
+
+  printf("fim do programa\n");
+  printf("li %d pontos e %d tracos\n", pontos, tracos);
+
+  return 0;
+}
+
+  /*
   // Main program
-  gLeds = 0x1;
-  while( 1 )
+  while(1)
   {
     // Reads serial input from arduino
 
@@ -72,16 +213,12 @@ int main() {
 
     // If the 'finish' button/switch is active, read the current switch state and apply the corresponding criptography on text vector, saving it to a file afterwards.
     
-    puts("oi");
 
-    read(dev, &k, 0);
-    k &= 0x3FFFF;
-    sw = k;
+    sw = readSwitch(dev, &k);
     printf("SW: %lu\n", sw);
 
-    read(dev, &k, 1);
-    k &= 0xF;
-    bt = k;
+
+    bt = readButton(dev, &k);
     printf("BT: %lu\n", bt);
 
 
@@ -89,29 +226,11 @@ int main() {
 
     sleep(1);
 
-      i = 10;
+    writeDisplayLeft(1,1,1,1,dev);
+    writeDisplayRight(5,5,5,5,dev);
 
-      k = hexdigit[rand()%10];
-      k = k | hexdigit[rand()%10] << 8;
-      k = k | hexdigit[rand()%10] << 16;
-      k = k | hexdigit[rand()%10] << 24;
-      k = ~k;
-
-      while(i>0){
-        write(dev, &k, 0);
-        write(dev, &k, 1);
-        --i;
-      }
-
-      if(sw == 128)
-      {
-        
-        write(dev, &gLeds, 2);
-        write(dev, &gLeds, 3);
-
-        printf("Valor nos leds: %d\n", gLeds);
-        gLeds++;
-      }
+    writeRedLeds(0x55, dev);
+    writeGreenLeds(0x0, dev);
 
     // Besides all that, the application should respond the pushbutton command to erase a character from text vector.
   }
@@ -119,6 +238,7 @@ int main() {
   //close(dev);
   return 0;
 }
+*/
 
 /* QUICK REF:
 
