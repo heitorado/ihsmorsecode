@@ -10,11 +10,15 @@ int main(void)
 {
 	srand(time(NULL));
 	int nthreads, tid;
-	int N = 10000000;
-
+	unsigned long long int N;
+	double error;
 	double x, y;
-	int i;
+	unsigned long long int i;
 
+	printf("Insert error value: ");
+	scanf("%lf", &error);
+	N = 1 / (error * error);
+	printf("N = %llu\n", N);
 	double result=0.0;
 
 	#pragma omp parallel private(x, y)
@@ -37,7 +41,7 @@ int main(void)
 
 	result = (4*result)/N;
 
-	printf("O resultado é: %lf\n", result);
+	printf("Result: %lf\n", result);
 
 	return 0;
 }
