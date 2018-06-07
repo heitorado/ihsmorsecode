@@ -44,15 +44,17 @@ int main() {
 
   int disp1, disp2;       // for writing on 7 seg displays
   int rLeds, gLeds;       // for writing on red and green leds
-  int sw, bt;             // for reading switches and buttons
+  unsigned long int sw, bt;             // for reading switches and buttons
   unsigned long int test;
-  int i=0, j=0, k=0, l=0; // aux
+  long int i=0, j=0, k=0, l=0; // aux
   char aux;
   char morseCode[5];      // for storing dots and slashes
   char text[100000];      // for storing the message.
 
+
   int dev = open("/dev/de2i150_altera", O_RDWR);
   printf("dev ID: %d\n", dev);
+  puts("aa");
 
   //TODO - Create thread for decoding morse
 
@@ -70,14 +72,17 @@ int main() {
 
     // If the 'finish' button/switch is active, read the current switch state and apply the corresponding criptography on text vector, saving it to a file afterwards.
     
+    puts("oi");
+
     read(dev, &k, 0);
-    sw = k & 0xFF;
-    printf("SW: %d\n", sw);
+    k &= 0x3FFFF;
+    sw = k;
+    printf("SW: %lu\n", sw);
 
     read(dev, &k, 1);
-    bt = k & 0xFF;
-    bt = abs(bt-15);
-    printf("BT: %d\n", bt);
+    k &= 0xF;
+    bt = k;
+    printf("BT: %lu\n", bt);
 
 
     
@@ -111,7 +116,7 @@ int main() {
     // Besides all that, the application should respond the pushbutton command to erase a character from text vector.
   }
 
-  close(dev);
+  //close(dev);
   return 0;
 }
 

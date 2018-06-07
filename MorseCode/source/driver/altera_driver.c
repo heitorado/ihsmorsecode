@@ -46,10 +46,9 @@ static int char_device_release(struct inode *inodep, struct file *filep) {
 }
 
 static ssize_t char_device_read(struct file *filep, char *buf, size_t type, loff_t *off) {
-  long switches;
-  long buttons;
+  long int switches;
+  long int buttons;
 
-  //  printk(KERN_ALERT "altera_driver: read %d bytes\n", len);
 
   // Mudança de variavel len para type para escolhermos onde a entrada sera lida
   // type = 0 -> switches
@@ -59,14 +58,24 @@ static ssize_t char_device_read(struct file *filep, char *buf, size_t type, loff
     if(type == 0)
     {
       switches = ioread32(inport);
-      put_user(switches, buf++);
-      //put_user((switches >> 24) & 0xFF, buf++);
+      printk(KERN_ALERT "altera_driver: read %d bytes\n", switches);
+
+      put_user((switches) & 0xFF, buf++);
+      put_user((switches >> 8) & 0xFF, buf++);
+      put_user((switches >> 16) & 0xFF, buf++);
+
+      /*put_user(switches & 0xFF, buf++);
+      put_user((switches >> 8) & 0xFF, buf++);
+      put_user((switches >> 16) & 0xFF, buf++);
+      put_user((switches >> 24) & 0xFF, buf++);*/
     }
     else if(type == 1)
     {
       buttons = ioread32(pushbutton);
       put_user(buttons & 0xFF, buf++);
       put_user((buttons >> 8) & 0xFF, buf++);
+      
+
     }
 
   return 4;
