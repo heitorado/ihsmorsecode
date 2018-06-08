@@ -4,6 +4,7 @@
 #include <string>
 #include <functional>
 #include <map>
+#include "./Bimap.cpp"
 
 namespace cripto {
 
@@ -19,8 +20,8 @@ namespace cripto {
 			     rot13 = 0x4			    
   };
   
-  element encript(const element& in, const ulli& key, const criptoMethods& method);  // cript a single morse/ascii character (interface)
-  element decript(const element& in, const ulli& key, const criptoMethods& method);  // deCript a single morse/ascii character (interface)
+  element encript(const element& in, const criptoMethods& method, const ulli& key = 0);  // cript a single morse/ascii character (interface)
+  element decript(const element& in, const criptoMethods& method, const ulli& key = 0);  // deCript a single morse/ascii character (interface)
 
   /*
     message encript(const message& in, const ulli& key, const criptoMethods& method);  // cript a single morse/ascii message (interface)
@@ -31,8 +32,7 @@ namespace cripto {
   */
 
   const element sep = ","; // separator
-  const std::map<element, element> morseDict = {
-						{  0  ,  0      }, 
+  const std::map<element, element> __dict = {
 						{ " " , " "     },
 						{ sep , sep     },
 					  
@@ -63,5 +63,7 @@ namespace cripto {
 						{ "Y" , "-.--"  },
 						{ "Z" ,  "--.." },
   };
+
+  const Bimap<element, element> asciiToMorseDict(__dict);
   
 };
