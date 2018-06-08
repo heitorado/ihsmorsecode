@@ -41,7 +41,7 @@ namespace cripto {
   }
 
   inline element _uncesar(const element& ascii, const ulli& key) {
-    return _cesar(ascii, ('A' - 'Z') - key);
+    return _cesar(ascii, ('A' - 'Z') - key + 9);
   }
   
   inline element _rot13(const element& ascii, const ulli& key) {
