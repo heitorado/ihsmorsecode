@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <EnsembleReport name="pcihellocore" kind="pcihellocore" version="1.0" fabric="QSYS">
  <!-- Format version 16.1 196 (Future versions may contain additional information.) -->
- <!-- 2018.05.18.19:04:07 -->
+ <!-- 2018.06.07.18:12:19 -->
  <!-- A collection of modules and connections -->
  <parameter name="AUTO_GENERATION_ID">
   <type>java.lang.Integer</type>
-  <value>1526681046</value>
+  <value>1528405939</value>
   <derived>false</derived>
   <enabled>true</enabled>
   <visible>false</visible>
@@ -3377,7 +3377,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="bar0_size_mask">
    <type>int</type>
-   <value>20</value>
+   <value>16</value>
    <derived>true</derived>
    <enabled>true</enabled>
    <visible>false</visible>
@@ -3681,7 +3681,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="BAR Size">
    <type>[Ljava.lang.Integer;</type>
-   <value>20,0,0,0,0,0</value>
+   <value>16,0,0,0,0,0</value>
    <derived>true</derived>
    <enabled>true</enabled>
    <visible>true</visible>
@@ -4657,7 +4657,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="SLAVE_ADDRESS_MAP_0">
    <type>int</type>
-   <value>20</value>
+   <value>16</value>
    <derived>false</derived>
    <enabled>true</enabled>
    <visible>false</visible>
@@ -6224,7 +6224,7 @@ parameters are a RESULT of the module parameters. -->
     <moduleName>inport</moduleName>
     <slaveName>s1</slaveName>
     <name>inport.s1</name>
-    <baseAddress>49184</baseAddress>
+    <baseAddress>49248</baseAddress>
     <span>16</span>
    </memoryBlock>
    <memoryBlock>
@@ -6240,7 +6240,7 @@ parameters are a RESULT of the module parameters. -->
     <moduleName>hex_display</moduleName>
     <slaveName>s1</slaveName>
     <name>hex_display.s1</name>
-    <baseAddress>49216</baseAddress>
+    <baseAddress>49184</baseAddress>
     <span>16</span>
    </memoryBlock>
    <memoryBlock>
@@ -6248,7 +6248,7 @@ parameters are a RESULT of the module parameters. -->
     <moduleName>pushbutton</moduleName>
     <slaveName>s1</slaveName>
     <name>pushbutton.s1</name>
-    <baseAddress>49248</baseAddress>
+    <baseAddress>49280</baseAddress>
     <span>16</span>
    </memoryBlock>
    <memoryBlock>
@@ -6256,7 +6256,7 @@ parameters are a RESULT of the module parameters. -->
     <moduleName>greenlight</moduleName>
     <slaveName>s1</slaveName>
     <name>greenlight.s1</name>
-    <baseAddress>49280</baseAddress>
+    <baseAddress>49344</baseAddress>
     <span>16</span>
    </memoryBlock>
    <memoryBlock>
@@ -6264,7 +6264,7 @@ parameters are a RESULT of the module parameters. -->
     <moduleName>redlight</moduleName>
     <slaveName>s1</slaveName>
     <name>redlight.s1</name>
-    <baseAddress>789664</baseAddress>
+    <baseAddress>49312</baseAddress>
     <span>16</span>
    </memoryBlock>
    <memoryBlock>
@@ -8697,7 +8697,7 @@ parameters are a RESULT of the module parameters. -->
   </parameter>
   <parameter name="baseAddress">
    <type>java.math.BigInteger</type>
-   <value>0xc020</value>
+   <value>0xc060</value>
    <derived>false</derived>
    <enabled>true</enabled>
    <visible>true</visible>
@@ -8799,7 +8799,7 @@ parameters are a RESULT of the module parameters. -->
   </parameter>
   <parameter name="baseAddress">
    <type>java.math.BigInteger</type>
-   <value>0xc040</value>
+   <value>0xc020</value>
    <derived>false</derived>
    <enabled>true</enabled>
    <visible>true</visible>
@@ -8850,7 +8850,7 @@ parameters are a RESULT of the module parameters. -->
   </parameter>
   <parameter name="baseAddress">
    <type>java.math.BigInteger</type>
-   <value>0xc060</value>
+   <value>0xc080</value>
    <derived>false</derived>
    <enabled>true</enabled>
    <visible>true</visible>
@@ -8901,7 +8901,7 @@ parameters are a RESULT of the module parameters. -->
   </parameter>
   <parameter name="baseAddress">
    <type>java.math.BigInteger</type>
-   <value>0xc080</value>
+   <value>0xc0c0</value>
    <derived>false</derived>
    <enabled>true</enabled>
    <visible>true</visible>
@@ -8952,7 +8952,7 @@ parameters are a RESULT of the module parameters. -->
   </parameter>
   <parameter name="baseAddress">
    <type>java.math.BigInteger</type>
-   <value>0x000c0ca0</value>
+   <value>0xc0a0</value>
    <derived>false</derived>
    <enabled>true</enabled>
    <visible>true</visible>

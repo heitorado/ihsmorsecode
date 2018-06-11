@@ -110,8 +110,8 @@ wire [31:0] greenlight_bus; 	//wire dos leds verdes
 		  .hex_display_external_connection_export (hex_display_bus), 	// conexao do display 7 seg
         .inport_external_connection_export      (inbus),       		// inport_external_connection.export
 		  .pushbutton_external_connection_export	(pushbutton_bus),
-		  .greenlight_external_connection_export	(redlight_bus),
-		  .redlight_external_connection_export		(greenlight_bus)
+		  .greenlight_external_connection_export	(greenlight_bus),
+		  .redlight_external_connection_export		(redlight_bus)
     );
 
 
@@ -128,7 +128,7 @@ assign HEX5 = hex_display_bus[14: 8];
 assign HEX6 = hex_display_bus[22:16];
 assign HEX7 = hex_display_bus[30:24];
 
-assign inbus = SW[15:0];
+assign inbus = SW[17:0];
 
 assign pushbutton_bus[3:0] = KEY;
 assign LEDR = redlight_bus[17:0];

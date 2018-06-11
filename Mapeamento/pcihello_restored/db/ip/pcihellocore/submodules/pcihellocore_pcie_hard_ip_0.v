@@ -18,7 +18,7 @@ module pcihellocore_pcie_hard_ip_0 #(
 		parameter       enable_ch0_pclk_out                 = "true",
 		parameter       core_clk_source                     = "pclk",
 		parameter       CB_P2A_AVALON_ADDR_B0               = 0,
-		parameter       bar0_size_mask                      = 20,
+		parameter       bar0_size_mask                      = 16,
 		parameter       bar0_io_space                       = "false",
 		parameter       bar0_64bit_mem_space                = "false",
 		parameter       bar0_prefetchable                   = "false",
@@ -390,7 +390,7 @@ module pcihellocore_pcie_hard_ip_0 #(
 			instantiated_with_wrong_parameters_error_see_comment_above
 					cb_p2a_avalon_addr_b0_check ( .error(1'b1) );
 		end
-		if (bar0_size_mask != 20)
+		if (bar0_size_mask != 16)
 		begin
 			initial begin
 				$display("Generated module instantiated with wrong parameters");
@@ -1683,7 +1683,7 @@ module pcihellocore_pcie_hard_ip_0 #(
 		.enable_ch0_pclk_out                 ("true"),
 		.core_clk_source                     ("pclk"),
 		.CB_P2A_AVALON_ADDR_B0               (0),
-		.bar0_size_mask                      (20),
+		.bar0_size_mask                      (16),
 		.bar0_io_space                       ("false"),
 		.bar0_64bit_mem_space                ("false"),
 		.bar0_prefetchable                   ("false"),

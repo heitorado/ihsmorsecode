@@ -127,7 +127,7 @@ module pcihellocore (
 		.enable_ch0_pclk_out                 ("true"),
 		.core_clk_source                     ("pclk"),
 		.CB_P2A_AVALON_ADDR_B0               (0),
-		.bar0_size_mask                      (20),
+		.bar0_size_mask                      (16),
 		.bar0_io_space                       ("false"),
 		.bar0_64bit_mem_space                ("false"),
 		.bar0_prefetchable                   ("false"),

@@ -1,5 +1,5 @@
 Restore Archived Project report for pcihello
-Fri May 18 18:59:01 2018
+Thu Jun 07 17:35:48 2018
 Quartus Prime Version 16.1.0 Build 196 10/24/2016 SJ Standard Edition
 
 
@@ -37,7 +37,7 @@ agreement for further details.
 +-------------------------------------------------------------------------+
 ; Restore Archived Project Summary                                        ;
 +---------------------------------+---------------------------------------+
-; Restore Archived Project Status ; Successful - Fri May 18 18:59:01 2018 ;
+; Restore Archived Project Status ; Successful - Thu Jun 07 17:35:48 2018 ;
 ; Revision Name                   ; pcihello                              ;
 ; Top-level Entity Name           ; pcihello                              ;
 ; Family                          ; Cyclone IV GX                         ;
@@ -47,29 +47,21 @@ agreement for further details.
 +-----------------------------------+
 ; Restore Archived Project Messages ;
 +-----------------------------------+
-Info: Successfully restored 'C:/Users/rlf4/Downloads/AP7/pcihello.qar' into the 'C:/Users/rlf4/Downloads/AP7/pcihello_restored/' directory
+Info: Successfully restored 'C:/Users/ijmg/Desktop/ihsmorsecode-master/Mapeamento/pcihello.qar' into the 'C:/Users/ijmg/Desktop/ihsmorsecode-master/Mapeamento/pcihello_restored/' directory
 Info: Generated report 'pcihello.restore.rpt'
 Info (23030): Evaluation of Tcl script c:/intelfpga/16.1/quartus/common/tcl/apps/qpm/qar.tcl was successful
-Info: Quartus Prime Shell was successful. 0 errors, 115 warnings
-    Info: Peak virtual memory: 672 megabytes
-    Info: Processing ended: Fri May 18 18:59:01 2018
+Info: Quartus Prime Shell was successful. 0 errors, 122 warnings
+    Info: Peak virtual memory: 686 megabytes
+    Info: Processing ended: Thu Jun 07 17:35:48 2018
     Info: Elapsed time: 00:00:02
     Info: Total CPU time (on all processors): 00:00:01
 
 
-+--------------------------------------------------------------+
-; Files Restored                                               ;
-+--------------------------------------------------------------+
-; File Name                                                    ;
-+--------------------------------------------------------------+
-; db/ip/pcihellocore/submodules/altera_irq_clock_crosser.sv    ;
-; db/ip/pcihellocore/submodules/pcihellocore_addr_router.sv    ;
-; db/ip/pcihellocore/submodules/pcihellocore_cmd_xbar_demux.sv ;
-; db/ip/pcihellocore/submodules/pcihellocore_id_router.sv      ;
-; db/ip/pcihellocore/submodules/pcihellocore_id_router_003.sv  ;
-; db/ip/pcihellocore/submodules/pcihellocore_rsp_xbar_demux.sv ;
-; db/ip/pcihellocore/submodules/pcihellocore_rsp_xbar_mux.sv   ;
-+--------------------------------------------------------------+
++----------------+
+; Files Restored ;
++----------------+
+; File Name      ;
++----------------+
 
 
 +--------------------------------------------------------------------------------+
@@ -80,6 +72,7 @@ Info: Quartus Prime Shell was successful. 0 errors, 115 warnings
 ; db/ip/pcihellocore/pcihellocore.v                                              ;
 ; db/ip/pcihellocore/submodules/altera_avalon_sc_fifo.v                          ;
 ; db/ip/pcihellocore/submodules/altera_avalon_st_pipeline_base.v                 ;
+; db/ip/pcihellocore/submodules/altera_irq_clock_crosser.sv                      ;
 ; db/ip/pcihellocore/submodules/altera_merlin_address_alignment.sv               ;
 ; db/ip/pcihellocore/submodules/altera_merlin_arbitrator.sv                      ;
 ; db/ip/pcihellocore/submodules/altera_merlin_burst_adapter.sv                   ;
@@ -120,11 +113,17 @@ Info: Quartus Prime Shell was successful. 0 errors, 115 warnings
 ; db/ip/pcihellocore/submodules/altpciexpav_stif_tx_cntrl.v                      ;
 ; db/ip/pcihellocore/submodules/altpciexpav_stif_txavl_cntrl.v                   ;
 ; db/ip/pcihellocore/submodules/altpciexpav_stif_txresp_cntrl.v                  ;
+; db/ip/pcihellocore/submodules/pcihellocore_addr_router.sv                      ;
+; db/ip/pcihellocore/submodules/pcihellocore_cmd_xbar_demux.sv                   ;
 ; db/ip/pcihellocore/submodules/pcihellocore_hexport.v                           ;
+; db/ip/pcihellocore/submodules/pcihellocore_id_router.sv                        ;
+; db/ip/pcihellocore/submodules/pcihellocore_id_router_003.sv                    ;
 ; db/ip/pcihellocore/submodules/pcihellocore_inport.v                            ;
 ; db/ip/pcihellocore/submodules/pcihellocore_irq_mapper.sv                       ;
 ; db/ip/pcihellocore/submodules/pcihellocore_pcie_hard_ip_0.v                    ;
 ; db/ip/pcihellocore/submodules/pcihellocore_pcie_hard_ip_0_altgx_internal.v     ;
+; db/ip/pcihellocore/submodules/pcihellocore_rsp_xbar_demux.sv                   ;
+; db/ip/pcihellocore/submodules/pcihellocore_rsp_xbar_mux.sv                     ;
 ; incremental_db/compiled_partitions/pcihello.db_info                            ;
 ; pcihello.cmp                                                                   ;
 ; pcihello.qpf                                                                   ;

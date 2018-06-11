@@ -4,7 +4,7 @@ JedecChain;
 	DefaultMfr(6E);
 
 	P ActionCode(Cfg)
-		Device PartName(EP4CGX150DF31) Path("C:/Users/rlf4/Downloads/AP7/pcihello_restored/") File("pcihello.sof") MfrSpec(OpMask(1));
+		Device PartName(EP4CGX150DF31) Path("C:/Users/ijmg/Desktop/ihsmorsecode-master/Mapeamento/pcihello_restored/") File("pcihello.sof") MfrSpec(OpMask(1));
 
 ChainEnd;
 
