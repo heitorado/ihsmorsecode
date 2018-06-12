@@ -8,6 +8,8 @@
 char morseToAscii(char* morseChar); // converts a morse character into a ascii char 
 char* asciiToMorse(char ascii); // converts a ascii char into a morse character
 
+
+
 // Internal functions //
 char toUpper(char lower);
 bool isUpper(char c);
@@ -20,6 +22,8 @@ struct DictionaryEntry {
   char ascii;
   char morse[5];
 };
+
+typedef struct DictionaryEntry DictionaryEntry;
 
 DictionaryEntry dict[] = {
 				{' ', " "},
