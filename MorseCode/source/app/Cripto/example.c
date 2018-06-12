@@ -7,7 +7,9 @@ int main(void) {
   for (c = 'A'; c <= 'Z'; ++c) {
     char* str = asciiToMorse(c);
     printf(str);
-    printf("\n");
+
+    char foo = morseToAscii(str);    
+    printf("    %c\n", foo);
   }
   
   return 0;
