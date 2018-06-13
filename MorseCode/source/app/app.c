@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <time.h>
 #include <omp.h>
-
+#include "./cripto.c"
 // CPP INCLUDES
 //#include <cstdlib>
 //#include <cmath>
@@ -45,8 +45,9 @@
 //VARIAVEIS GLOBAIS
 int n1=0,n2=0,n3=0,n4,n5=0,n6=0,n7=0,n8=0,palavras=0,tamanho=0;
 int globalCounter=0;
-char morseCode[100]={"0"};      // for storing dots and slashes
-char text[100000];      // for storing the message.
+char morseCode[100]={'\0'};      // for storing dots and slashes
+char text[10000];      // for storing the message.
+//text = malloc(100000*sizeof(char));
 long int tempo = 0, tempo2 = 0, tempo3 = 0;
 
 // Conversion array for 7 Segment display.
@@ -173,22 +174,25 @@ void NumberToDisplay(int n, int dev)
 void count(int dev)
 {
   int i;
-  char morse[5];
-  for(i=5;i>=0;i--){
+  char morse[10];
+  for(i=8;i>=0;i--){
       n4=i;
       writeDisplayLeft(n1,n2,n3,n4, dev);
       sleep(1);
   }
   globalCounter=0;
-  n5=127;
-  n6=127;
-  n7=127;
-  n8=127;
+  n5=128;
+  n6=128;
+  n7=128;
+  n8=128;
   writeDisplayRight(n5,n6,n7,n8, dev);
-  for(i=0;i<4;i++) 
+  for(i=0;i<4;i++) {
     morse[i] = morseCode[i];
-  //text[tamanho] =  chamada de funcao de Ze;
-  //tamanho++;
+    morseCode[i] = '\0';
+  }
+  text[tamanho] = morseToAscii(morse);
+  printf("Voce inseriu a letra %c no texto\n", text[tamanho]);
+  tamanho++;
 }
 
 extern void morse_bip();
@@ -255,16 +259,19 @@ int main() {
         if(tempo2 > 0)
         {
           tempo2=0;
-          //tamanho--;
+          tamanho--;
+          printf("Voce removeu a letra %c do texto\n", text[tamanho]);
 
         }
+    
         if(tempo3 > 0)
         {
           tempo3=0;
           palavras++;
 
-          //text[tamanho] = '\0';
-          //tamanho++;
+          text[tamanho] = '\0';
+          printf("Nova palavra iniciada.\n");
+          tamanho++;
           NumberToDisplay(palavras, dev);
         }
 
