@@ -169,9 +169,9 @@ void count(int dev)
 
     printf("Voce inseriu a letra %c no texto\n", text[tamanho]);
     tamanho++;
-  } else {
-    printf("Nada foi digitado\n");
-  }
+  } //else {
+    //printf("Nada foi digitado\n");
+  //}
     
 }
 
@@ -332,7 +332,7 @@ int main() {
 
         if(bt == 0)
         {
-          if(tempo >= MAX_DOT_TIME) //traco
+          if(tempo >= 1.5 * MAX_DOT_TIME) //traco
           {
             //morse_bip();
             morseCode[globalCounter] = '-';
