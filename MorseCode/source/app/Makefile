@@ -4,7 +4,8 @@
 #
 
 app: app.c
-	$(CC) app.c -o app -fopenmp
+	nasm -f elf bzz.asm
+	$(CC) -m32 app.c -o app bzz.o -fopenmp -lm
 	# cp app /opt/tftp
 
 clean:

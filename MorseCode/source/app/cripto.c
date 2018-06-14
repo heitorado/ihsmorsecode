@@ -12,7 +12,9 @@ char morseToAscii(char* morseChar) { // converts a morse character into a ascii 
 char* asciiToMorse(char ascii) { // converts a ascii char into a morse character
   int index;
   
-  if (isLower(ascii))
+  if (ascii == ' ')
+    return dict[0].morse;
+  else if (isLower(ascii))
     ascii = toUpper(ascii);
   else if ( ! isUpper(ascii) )
     return NULL;
@@ -23,6 +25,12 @@ char* asciiToMorse(char ascii) { // converts a ascii char into a morse character
     return dict[ index ].morse;
   else
     return "####";
+}
+
+char cesar(unsigned long int key, char asciiUpper) {
+  key = key % 26;
+
+  return 'A' + ( (asciiUpper - 'A' + key) % 26 );
 }
 
 char toUpper(char lower) {

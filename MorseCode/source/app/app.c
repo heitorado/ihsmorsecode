@@ -4,13 +4,8 @@
 #include <stdio.h>
 #include <time.h>
 #include <omp.h>
+#include <math.h>
 #include "./cripto.c"
-// CPP INCLUDES
-//#include <cstdlib>
-//#include <cmath>
-//#include <iostream>
-//using namespace std;
-//
 
 // Referecing the 4 pushbuttons from the FPGA, from left to right.
 #define BT1 8
@@ -40,16 +35,20 @@
 #define SW01 1
 
 // Constraints for morse code
-#define MAX_DOT_TIME 50000
+#define MAX_DOT_TIME 5
+#define CLEAR_BUFFER_TIMEOUT 2
+
+extern void beep(int);
 
 //VARIAVEIS GLOBAIS
 int n1=0,n2=0,n3=0,n4,n5=0,n6=0,n7=0,n8=0,palavras=0,tamanho=0;
 int globalCounter=0;
-char morseCode[100]={'\0'};      // for storing dots and slashes
+char morseCode[100]={'\0'},cripto[100];      // for storing dots and slashes
 char text[10000];      // for storing the message.
 //text = malloc(100000*sizeof(char));
-long int tempo = 0, tempo2 = 0, tempo3 = 0;
-
+long int tempo = 0, tempo2 = 0, tempo3 = 0, tempo4 = 0;
+unsigned long int lastKey; // a ultima chave usada quando o user apertou o 4o botao
+unsigned long int key;
 // Conversion array for 7 Segment display.
 unsigned char hexdigit[] = {0x3F, 0x06, 0x5B, 0x4F,
                             0x66, 0x6D, 0x7D, 0x07, 
@@ -102,7 +101,7 @@ void writeDisplayLeft(int num1, int num2, int num3, int num4, int dev)
 {
   long int i = 10;
   long int k = 0;
-
+  //printf("%d\n", num4);
   k = hexdigit[num4];
   k = k | hexdigit[num3] << 8;
   k = k | hexdigit[num2] << 16;
@@ -132,52 +131,23 @@ void writeGreenLeds(int val, int dev)
 
   return;
 }
-void Intensity(int n, int dev)
-{
-  sleep(1);
-  if(n == 0){ writeGreenLeds(0x0,dev); writeRedLeds(0x0, dev); }
-  else if(n<=MAX_DOT_TIME/8) writeGreenLeds(1,dev);
-  else if(n<=2*MAX_DOT_TIME/8) writeGreenLeds(3,dev);
-  else if(n<=3*MAX_DOT_TIME/8) writeGreenLeds(7,dev);
-  else if(n<=4*MAX_DOT_TIME/8) writeGreenLeds(15,dev);
-  else if(n<=5*MAX_DOT_TIME/8) writeGreenLeds(31,dev);
-  else if(n<=6*MAX_DOT_TIME/8) writeGreenLeds(63,dev);
-  else if(n<=7*MAX_DOT_TIME/8) writeGreenLeds(127,dev);
-  else if(n<=8*MAX_DOT_TIME/8) writeGreenLeds(255,dev);
-  else if(n<=9*MAX_DOT_TIME/8) {writeGreenLeds(255,dev); writeRedLeds(1,dev);}
-  else if(n<=10*MAX_DOT_TIME/8) {writeGreenLeds(255,dev); writeRedLeds(3,dev);}
-  else if(n<=11*MAX_DOT_TIME/8) {writeGreenLeds(255,dev); writeRedLeds(7,dev);}
-  else if(n<=12*MAX_DOT_TIME/8) {writeGreenLeds(255,dev); writeRedLeds(15,dev);}
-  else if(n<=13*MAX_DOT_TIME/8) {writeGreenLeds(255,dev); writeRedLeds(31,dev);}
-  else if(n<=14*MAX_DOT_TIME/8) {writeGreenLeds(255,dev); writeRedLeds(63,dev);}
-  else if(n<=15*MAX_DOT_TIME/8) {writeGreenLeds(255,dev); writeRedLeds(127,dev);}
-  else if(n<=16*MAX_DOT_TIME/8) {writeGreenLeds(255,dev); writeRedLeds(255,dev);}
-  else if(n<=17*MAX_DOT_TIME/8) {writeGreenLeds(255,dev); writeRedLeds(511,dev);}
-  else if(n<=18*MAX_DOT_TIME/8) {writeGreenLeds(255,dev); writeRedLeds(1023,dev);}
-  else if(n<=19*MAX_DOT_TIME/8) {writeGreenLeds(255,dev); writeRedLeds(2047,dev);}
-  else if(n<=20*MAX_DOT_TIME/8) {writeGreenLeds(255,dev); writeRedLeds(4095,dev);}
-  else if(n<=21*MAX_DOT_TIME/8) {writeGreenLeds(255,dev); writeRedLeds(8191,dev);}
-  else if(n<=22*MAX_DOT_TIME/8) {writeGreenLeds(255,dev); writeRedLeds(16383,dev);}
-  else if(n<=23*MAX_DOT_TIME/8) {writeGreenLeds(255,dev); writeRedLeds(32767,dev);}
-  else if(n<=24*MAX_DOT_TIME/8) {writeGreenLeds(255,dev); writeRedLeds(65535,dev);}
-  else if(n<=25*MAX_DOT_TIME/8) {writeGreenLeds(255,dev); writeRedLeds(131071,dev);}
-  else if(n<=26*MAX_DOT_TIME/8) {writeGreenLeds(255,dev); writeRedLeds(262143,dev);}
-  return;
-}
+
 void NumberToDisplay(int n, int dev)
 {
   n1 = n/10;
   n2 = n%10;
-  writeDisplayLeft(n1,n2,n3,n4, dev);
+  writeDisplayLeft(n1, n2, n3, n4, dev);
 
 }
 void count(int dev)
 {
   int i;
   char morse[10];
-  for(i=8;i>=0;i--){
+  char aux;
+
+  for(i=CLEAR_BUFFER_TIMEOUT;i>=0;i--){
       n4=i;
-      writeDisplayLeft(n1,n2,n3,n4, dev);
+      writeDisplayLeft(n1, n2, n3, n4, dev);
       sleep(1);
   }
   globalCounter=0;
@@ -190,15 +160,36 @@ void count(int dev)
     morse[i] = morseCode[i];
     morseCode[i] = '\0';
   }
-  text[tamanho] = morseToAscii(morse);
-  printf("Voce inseriu a letra %c no texto\n", text[tamanho]);
-  tamanho++;
+  
+  aux = morseToAscii(morse);
+
+  if (aux != '#') {
+    text[tamanho] = aux;
+
+    printf("Voce inseriu a letra %c no texto\n", text[tamanho]);
+    tamanho++;
+  } else {
+    printf("Nada foi digitado\n");
+  }
+    
 }
 
-extern void morse_bip();
+
+long int debounce(int dev, long int *k, unsigned long  BT) {
+  long int tempo = 0;
+
+  while ( BT == readButton(dev, k) ){
+    if(BT == BT1)
+      beep(440);
+
+    ++tempo;
+  }
+
+  return tempo;
+}
+
 
 int main() {
-
   // Initial Setup
   srand(time(NULL));
   long int k = 0;
@@ -218,8 +209,8 @@ int main() {
   writeRedLeds(0x0,dev);
   //TODO - Create thread for decoding morse
   int maxt=0;
-
-  #pragma omp parallel num_threads(3) private(tid)
+  
+  #pragma omp parallel num_threads(2) private(tid)
   {
     tid = omp_get_thread_num();
 
@@ -229,11 +220,7 @@ int main() {
           count(dev);
       }
     }
-    if(tid == 2){
-     while(1){
-        Intensity(tempo,dev);
-      }
-    }
+
 
     #pragma omp master
     {
@@ -241,35 +228,101 @@ int main() {
       while(prog)
       {
         bt = readButton(dev, &k);
-        while(bt == BT1)
-        {
+
+        while(bt == BT1){
           bt = readButton(dev, &k);
           tempo++;
+          beep(440);
         }
-        while(bt == BT2)
-        {
+        
+        while(bt == BT2){
           bt = readButton(dev, &k);
           tempo2++;  
         }
-        while(bt == BT3)
-        {
+        
+        while(bt == BT3){
           bt = readButton(dev, &k);
-          tempo3++; 
+          tempo3++;
         }
-        if(tempo2 > 0)
-        {
-          tempo2=0;
-          tamanho--;
-          printf("Voce removeu a letra %c do texto\n", text[tamanho]);
+        
+        while (bt == BT4){
+          bt = readButton(dev, &k);
+          tempo4++;
+        }
 
+        if(tempo2 > MAX_DOT_TIME)
+        {
+          tamanho--;
+          if(text[tamanho] == ' ') {
+
+            palavras--;
+            NumberToDisplay(palavras, dev);
+          }
+          if (tamanho < 0)
+          {
+            tamanho = 0;
+            printf("Texto vazio.");
+          }
+          else {
+            if(text[tamanho] == ' ') printf("Voce removeu um espaco\n");
+            else printf("Voce removeu a letra %c do texto\n", text[tamanho]); 
+            
+            text[tamanho] = '\0';
+          }
+          
+
+        }
+        if(tempo4 > MAX_DOT_TIME)
+        {
+          FILE *arq = fopen ("criptmsg.txt", "w+");
+          key = readSwitch(dev,&k);
+          lastKey = key;
+          writeRedLeds(lastKey, dev);
+          for(i=0;i<tamanho;i++) {
+            if(text[i]!=' ')cripto[i] = cesar(key, text[i]);
+            else cripto[i] = ' ';            
+          }
+
+          for (i = 0; i < tamanho; ++i)
+          {
+            const char const * const morseEncripted = asciiToMorse(cripto[i]);
+            printf("%s\n", morseEncripted);
+
+            for (j = 0; morseEncripted[j] != '\0'; ++j)
+            {             
+              if (morseEncripted[j] == '.') {
+                beep(440);
+                usleep(500000);
+              }
+              else if (morseEncripted[j] == '-') {
+                beep(440);
+                usleep(750000);
+              }
+            }
+
+            usleep(1000000);
+          }
+
+          fwrite(cripto,sizeof(char),tamanho,arq);
+
+          fclose(arq);
+
+          printf("Criptografando... Aguarde.\n");
+
+          for(i=1;i<=8;i++){
+            writeGreenLeds(pow(2,i)-1, dev);
+            usleep(500000);
+          }
+
+          printf("Concluido.\n");
+          writeGreenLeds(pow(2,i)-1, dev);
         }
     
         if(tempo3 > 0)
         {
-          tempo3=0;
           palavras++;
 
-          text[tamanho] = '\0';
+          text[tamanho] = ' ';
           printf("Nova palavra iniciada.\n");
           tamanho++;
           NumberToDisplay(palavras, dev);
@@ -277,7 +330,7 @@ int main() {
 
         if(bt == 0)
         {
-          if(tempo > MAX_DOT_TIME) //traco
+          if(tempo >= MAX_DOT_TIME) //traco
           {
             //morse_bip();
             morseCode[globalCounter] = '-';
@@ -308,7 +361,6 @@ int main() {
               n8 = 64;
               writeDisplayRight(n5,n6,n7,n8, dev);
             }
-            tempo = 0;
           }
           else if(tempo > 0 && tempo <= MAX_DOT_TIME)
           {
@@ -340,9 +392,8 @@ int main() {
               n8 = 63;
               writeDisplayRight(n5,n6,n7,n8, dev);
             }
-            tempo = 0;
           }
-
+          tempo = tempo2 = tempo3 = tempo4 = 0;
         }
       }
     }
