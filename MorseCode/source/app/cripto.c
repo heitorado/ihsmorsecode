@@ -33,6 +33,17 @@ char cesar(unsigned long int key, char asciiUpper) {
   return 'A' + ( (asciiUpper - 'A' + key) % 26 );
 }
 
+char kevin(unsigned long int key, char asciiUpper, bool direction) {
+  key = key % 26;
+
+  if (direction) {
+    return cesar(key, asciiUpper);
+  } else {
+    return cesar(26 - key, asciiUpper);
+  }
+}
+
+
 char toUpper(char lower) {
   return lower + 'A' - 'a';
 }

@@ -5,6 +5,7 @@
 #include <time.h>
 #include <omp.h>
 #include <math.h>
+
 #include "./cripto.c"
 
 // Referecing the 4 pushbuttons from the FPGA, from left to right.
@@ -36,7 +37,7 @@
 
 // Constraints for morse code
 #define MAX_DOT_TIME 5
-#define CLEAR_BUFFER_TIMEOUT 2
+#define CLEAR_BUFFER_TIMEOUT 4
 
 extern void beep(int);
 
@@ -278,8 +279,16 @@ int main() {
           key = readSwitch(dev,&k);
           lastKey = key;
           writeRedLeds(lastKey, dev);
+          
+          printf("Criptografando... Aguarde.\n");
+
+          for(i=1;i<=8;i++){
+            writeGreenLeds(pow(2,i)-1, dev);
+            usleep(500000);
+          }
+
           for(i=0;i<tamanho;i++) {
-            if(text[i]!=' ')cripto[i] = cesar(key, text[i]);
+            if(text[i]!=' ')cripto[i] = kevin(key, text[i], i % 2);
             else cripto[i] = ' ';            
           }
 
@@ -306,13 +315,6 @@ int main() {
           fwrite(cripto,sizeof(char),tamanho,arq);
 
           fclose(arq);
-
-          printf("Criptografando... Aguarde.\n");
-
-          for(i=1;i<=8;i++){
-            writeGreenLeds(pow(2,i)-1, dev);
-            usleep(500000);
-          }
 
           printf("Concluido.\n");
           writeGreenLeds(pow(2,i)-1, dev);

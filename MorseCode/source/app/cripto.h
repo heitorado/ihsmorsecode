@@ -8,7 +8,7 @@
 char morseToAscii(char* morseChar); // converts a morse character into a ascii char 
 char* asciiToMorse(char ascii); // converts a ascii char into a morse character
 char cesar(unsigned long int key, char asciiUpper);
-
+char kevin(unsigned long int key, char asciiUpper, bool direction);
 
 // Internal functions //
 char toUpper(char lower);
