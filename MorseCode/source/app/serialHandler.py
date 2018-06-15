@@ -14,13 +14,14 @@ print("SERIAL NAME: " + ser.name)
 ser.close()
 
 while (True):
-	file_obj = open(FILENAME, "a+")
 
 	ser = serial.Serial(PORT, RATE)
-	val = ser.readline()
-	file_obj.write(val)
+	val = str( ser.readline().strip() )
 	ser.close()
 
-	file_obj.close()
+	if (val != ''):
+		file_obj = open(FILENAME, "w")
+		file_obj.write(val)
+		file_obj.close()
 
 	print(val)

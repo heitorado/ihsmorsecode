@@ -5,6 +5,7 @@
 #include <time.h>
 #include <omp.h>
 #include <math.h>
+#include <string.h>
 
 #include "./cripto.c"
 
@@ -46,6 +47,19 @@ int n1=0,n2=0,n3=0,n4,n5=0,n6=0,n7=0,n8=0,palavras=0,tamanho=0;
 int globalCounter=0;
 char morseCode[100]={'\0'},cripto[100];      // for storing dots and slashes
 char text[10000];      // for storing the message.
+#define AMOUNT_OF_REMOTE_CODES 6
+char remoteCodes[ AMOUNT_OF_REMOTE_CODES ][32] = {
+  {"OFF"},
+  {"REMOVE"},
+  {"SPACE"},
+  {"ENCRIPT"},
+  {"DISPLAY"},
+  {"RESET"}
+};
+unsigned int REMOTE_DELAY = 0;
+unsigned int OFF = 0, REMOVE = 1, SPACE = 2, ENCRIPT = 3, DISPLAY = 4, RESET = 5, NONE = 6;
+unsigned int remoteState = 6;
+
 //text = malloc(100000*sizeof(char));
 long int tempo = 0, tempo2 = 0, tempo3 = 0, tempo4 = 0;
 unsigned long int lastKey; // a ultima chave usada quando o user apertou o 4o botao
@@ -189,6 +203,25 @@ long int debounce(int dev, long int *k, unsigned long  BT) {
   return tempo;
 }
 
+unsigned int readRemote(void) {
+  unsigned int state = NONE;
+  
+  FILE* pyc = fopen("./py-c", "r");
+  char buffVal[128];
+  fgets(buffVal, 128, pyc);
+  system("cat /dev/null > ./py-c"); // wipe file
+  fclose(pyc);
+
+  int i;
+
+  for (i = 0; i < AMOUNT_OF_REMOTE_CODES; ++i) {
+    if (strcmp(buffVal, remoteCodes[i]) == 0) {
+      state = i;
+    }
+  }
+
+  return state;
+}
 
 int main() {
   // Initial Setup
@@ -201,7 +234,7 @@ int main() {
 
   //threads
   int tid;
-
+  int prog = 1;
   //app specific
   
 
@@ -211,13 +244,14 @@ int main() {
   //TODO - Create thread for decoding morse
   int maxt=0;
   
+
   #pragma omp parallel num_threads(2) private(tid)
   {
     tid = omp_get_thread_num();
 
     if(tid == 1) //thread responsavel por ler o caractere morse
     {
-      while(1){
+      while(prog){
           count(dev);
       }
     }
@@ -225,11 +259,24 @@ int main() {
 
     #pragma omp master
     {
-      int prog = 1;
+      
+
+
       while(prog)
       {
         bt = readButton(dev, &k);
 
+        ++REMOTE_DELAY;
+        if (REMOTE_DELAY <= 2500) {
+          REMOTE_DELAY = 0;
+          remoteState = readRemote();
+        }
+        
+
+
+        if (remoteState != NONE)
+          printf("%s\n", remoteCodes[remoteState]);
+              
         while(bt == BT1){
           bt = readButton(dev, &k);
           tempo++;
@@ -250,8 +297,36 @@ int main() {
           bt = readButton(dev, &k);
           tempo4++;
         }
+        if(remoteState == DISPLAY) {
+          printf("Texto atual: ");
+          printf("%s\n", text);
+        }
+        if(remoteState == OFF){
+          prog = 0;
+        }
+        if(remoteState == RESET){
+          for(i=0; i<tamanho; ++i)
+            text[i] = '\0';
+          tamanho = 0;
+          palavras = 0;
+          globalCounter = 0;
+          n1=0;
+          n2=0;
+          n3=0;
+          n4=0;
+          n5=0;
+          n6=0;
+          n7=0;
+          n8=0;
+          writeGreenLeds(0, dev);
+          writeRedLeds(0, dev);
+          writeDisplayRight(0,0,0,0,dev);
+          writeDisplayLeft(63,63,63,63,dev);
 
-        if(tempo2 > MAX_DOT_TIME)
+          printf("RESTARTING............ DONE\n");
+
+        }
+        if(tempo2 > MAX_DOT_TIME || remoteState==REMOVE)
         {
           tamanho--;
           if(text[tamanho] == ' ') {
@@ -273,7 +348,7 @@ int main() {
           
 
         }
-        if(tempo4 > MAX_DOT_TIME)
+        if(tempo4 > MAX_DOT_TIME || remoteState==ENCRIPT)
         {
           FILE *arq = fopen ("criptmsg.txt", "w+");
           key = readSwitch(dev,&k);
@@ -320,7 +395,7 @@ int main() {
           writeGreenLeds(pow(2,i)-1, dev);
         }
     
-        if(tempo3 > 0)
+        if(tempo3 > 0 || remoteState==SPACE)
         {
           palavras++;
 
@@ -364,7 +439,7 @@ int main() {
               writeDisplayRight(n5,n6,n7,n8, dev);
             }
           }
-          else if(tempo > 0 && tempo <= MAX_DOT_TIME)
+          else if(tempo > 0 && tempo <= MAX_DOT_TIME *1.5)
           {
             morseCode[globalCounter] = '.';
             globalCounter++;
